@@ -1,0 +1,22 @@
+{
+  "name": "webpackgettingstarted",
+  "version": "0.0.1",
+  "description": "Following https://webpack.js.org/guides/getting-started/",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/cintiamh/WebpackGettingStarted.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/cintiamh/WebpackGettingStarted/issues"
+  },
+  "homepage": "https://github.com/cintiamh/WebpackGettingStarted#readme",
+  "devDependencies": {
+    "webpack": "^3.4.1"
+  }
+}
