@@ -482,3 +482,7 @@ module.exports = {
   }
 };
 ```
+
+## Development
+
+https://github.com/cintiamh/WebpackGettingStarted/tree/05-development
