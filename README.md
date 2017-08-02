@@ -958,3 +958,80 @@ module.exports = Merge(CommonConfig, {
 Tree shaking is a term commonly used in the JavaScript context for dead-code elimination, or more precisely, live-code import.
 
 Webpack 2 comes with a built-in support for ES2015 modules (alias harmony modules) as well as unused module export detection.
+
+## Code Splitting
+
+Code splitting allows you to split your code into various bundles which can then be loaded on demand or in parallel.
+
+* Entry Points: Manually split code using `entry` configuration.
+* Prevent Duplication: Use the `CommonsChunkPlugin` to dedupe and split chunks.
+* Dynamic imports: split code via inline function calls within modules.
+
+### Entry Points
+
+This is the easiest, most intuitive way to split code.
+
+However, it's more manual and has some pitfalls.
+* If there are any duplicated modules between entry chunks they will be included in both bundles.
+* If isn't as flexible and can't be used to dynamically split code with the core application logic.
+
+webpack.config.js:
+```javascript
+const path = require('path');
+const HTMLWebpackPlugin = require('html-webpack-plugin');
+
+module.exports = {
+  entry: {
+    index: './src/index.js',
+    another: './src/another-module.js'
+  },
+  plugins: [
+    new HTMLWebpackPlugin({
+      title: 'Code Splitting'
+    })
+  ],
+  output: {
+    filename: '[name].bundle.js',
+    path: path.resolve(__dirname, 'dist')
+  }
+};
+```
+
+### Prevent Duplication
+
+The CommonsChunkPlugin allows us to extract common dependencies into an existing entry chunk or an entirely new chunk.
+
+webpack.config.js:
+```javascript
+const path = require('path');
+const webpack = require('webpack');
+const HTMLWebpackPlugin = require('html-webpack-plugin');
+
+module.exports = {
+  entry: {
+    index: './src/index.js',
+    another: './src/another-module.js'
+  },
+  plugins: [
+    new HTMLWebpackPlugin({
+      title: 'Code Splitting'
+    }),
+    new webpack.optimize.CommonsChunkPlugin({
+      name: 'common' // specify the common bundle's name.
+    })
+  ],
+  output: {
+    filename: '[name].bundle.js',
+    path: path.resolve(__dirname, 'dist')
+  }
+};
+```
+
+Some other useful plugins and loaders for splitting code:
+* [ExtractTextPlugin](https://webpack.js.org/plugins/extract-text-webpack-plugin/): Useful for splitting CSS out from the main application.
+* [bundle-loader](https://webpack.js.org/loaders/bundle-loader/): Used to split code and lazy load the resulting bundles.
+* [promise-loader](https://github.com/gaearon/promise-loader): Similar to the bundle-loader but uses promises.
+
+The CommonsChunkPlugin is also used to split vendor modules from core application code using [explicit vendor chunks](https://webpack.js.org/plugins/commons-chunk-plugin/#explicit-vendor-chunk).
+
+### Dynamic Imports
