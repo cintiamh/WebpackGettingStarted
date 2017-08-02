@@ -392,3 +392,69 @@ export default function printMe() {
   console.log('I get called from print.js!');
 }
 ```
+
+And use this inside `index.js`:
+```javascript
+import _ from 'lodash';
+import printMe from './print.js';
+
+function component() {
+  var element = document.createElement('div');
+  var btn = document.createElement('button');
+
+  element.innerHTML = _.join(['Hello', 'webpack'], '');
+
+  btn.innerHTML = 'Click me and check the console!';
+  btn.onclick = printMe;
+
+  element.appendChild(btn);
+
+  return element;
+}
+
+document.body.appendChild(component());
+```
+
+### Setting up HtmlWebpackPlugin
+
+In the case we change the bundled package name or the title, we need to update `dist/index.html` file as well.
+
+In order to dynamically update these values is to use HtmlWebpackPlugin.
+
+```
+$ npm install --save-dev html-webpack-plugin
+```
+
+Update `webpack.config.js`:
+```javascript
+const path = require('path');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
+
+module.exports = {
+  entry: {
+    app: './src/index.js',
+    print: './src/print.js'
+  },
+  plugins: [
+    new HtmlWebpackPlugin({
+      title: 'Output Management'
+    })
+  ],
+  output: {
+    filename: '[name].bundle.js',
+    path: path.resolve(__dirname, 'dist')
+  }
+};
+```
+
+Once you run `npm run build`, it will update the `dist/index.html` file as well with all the bundles automatically added.
+
+### Cleaning up the `/dist` folder
+
+Webpack will generate the files and put them in the `/dist` folder for you, but it doesn't keep track of which files are actually being used.
+
+We can use `clean-webpack-plugin` to clean the `/dist` folder before each build.
+
+```
+$ npm install clean-webpack-plugin --save-dev
+```
