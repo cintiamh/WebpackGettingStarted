@@ -197,3 +197,70 @@ function component() {
 
 document.body.appendChild(component());
 ```
+
+### Loading images
+
+Using `file-loader` we can incorporate images like background and icons.
+```
+$ npm i --save-dev file-loader
+```
+
+`webpack.config.js`:
+```javascript
+const path = require('path');
+
+module.exports = {
+  entry: './src/index.js',
+  output: {
+    filename: 'bundle.js',
+    path: path.resolve(__dirname, 'dist')
+  },
+  module: {
+    rules: [
+      {
+        test: /\.css$/,
+        use: ['style-loader', 'css-loader']
+      },
+      {
+        test: /\.(png|svg|jpg|gif)$/,
+        use: ['file-loader']
+      }
+    ]
+  }
+};
+```
+
+Now, when you `import MyImage from './my-image.png'`, that image will be processed and added to your output directory and the `MyImage` variable will contain the final url of that image after processing.
+
+When using the `css-loader`, as shown above, a similar process will occur for `url('./my-image.png')` within your CSS. The loader will recognize this is a local file, and replace the `'./my-image.png'` path with the final path to the image in your output directory.
+
+The `html-loader` handles `<img src="./my-image.png" />` in the same manner.
+
+`index.js`
+```javascript
+import _ from 'lodash';
+import './style.css';
+import Icon from './fb.jpg';
+
+function component() {
+  var element = document.createElement('div');
+  element.innerHTML = _.join(['Hello', 'webpack'], '');
+  element.classList.add('hello');
+  var myIcon = new Image();
+  myIcon.src = Icon;
+  element.appendChild(myIcon);
+  return element;
+}
+
+document.body.appendChild(component());
+```
+
+`style.css`
+```css
+.hello {
+  color: red;
+  background: url('./fb.jpg');
+}
+```
+
+A logical next step from here is minifying and optimizing your images. Check out the `image-webpack-loader` and `url-loader` for more on how you can enhance your image loading process.
