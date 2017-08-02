@@ -584,3 +584,5 @@ And include the script on `package.json`:
   }
 }
 ```
+
+## Hot module replacement
