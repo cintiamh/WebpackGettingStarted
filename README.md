@@ -136,3 +136,7 @@ Now you should be able to run just with:
 ```
 $ npm run build
 ```
+
+## Asset Management
+
+Tools like webpack will dynamically bundle all dependencies, creating what's known as a dependency graph.
