@@ -733,3 +733,222 @@ Now whenever you change the css style in the `./src/styles.css` file, it will up
 * Redux HMR: https://survivejs.com/webpack/appendices/hmr-with-react/#configuring-hmr-with-redux
 
 ## Production
+
+https://github.com/cintiamh/WebpackGettingStarted/tree/07-production
+
+### The Automatic Way
+
+```
+$ webpack -p
+```
+
+Is equivalent to running:
+```
+$ webpack --optimize-minimize --define process.env.NODE_ENV="'production'"
+```
+
+This performs the following:
+* Minification using `UglifyJsPlugin`
+* Runs the `LoaderOptionsPlugin` - https://webpack.js.org/plugins/loader-options-plugin/
+* Sets the NodeJS environment variable triggering certain packages to compile differently.
+
+#### Minification
+
+Webpack comes with `UglifyJsPlugin`, which runs `UglifyJS`. Config: https://github.com/mishoo/UglifyJS2#usage
+
+#### Source maps
+
+In your configuration, use the `devtool` object to set the Source Map type.
+
+#### Node Environment Variable
+
+Running `webpack -p` invokes the `DefinePlugin`.
+
+The DefinePlugin performs search-and-replace operations on the original source code.
+
+Any occurrence of `process.env.NODE_ENV` in the imported code is replaced by `"production"`.
+
+Thus, checks like `if (process.env.NODE_ENV !== 'production') console.log('...')` are evaluated to `if (false) console.log('...')` and finally minified away using UglifyJS.
+
+Contrary to expectations, `process.env.NODE_ENV` is not set to `"production"` within the build script `webpack.config.js`.
+
+https://webpack.js.org/guides/environment-variables/
+
+### The Manual Way
+
+When we do have multiple configurations in mind for different environments, the easiest approach is to write separate webpack configurations for each environment.
+
+#### Simple Approach
+
+The simplest way to do this is just to define two fully independent configuration files, like so:
+
+webpack.dev.js
+```javascript
+module.exports = {
+  devtool: 'cheap-module-source-map',
+
+  output: {
+    path: path.join(__dirname, '/../dist/assets'),
+    filename: '[name].bundle.js',
+    publicPath: publicPath,
+    sourceMapFilename: '[name].map'
+  },
+
+  devServer: {
+    port: 7777,
+    host: 'localhost',
+    historyApiFallback: true,
+    noInfo: false,
+    stats: 'minimal',
+    publicPath: publicPath
+  }
+}
+```
+
+webpack.prod.js:
+```javascript
+module.exports = {
+  output: {
+    path: path.join(__dirname, '/../dist/assets'),
+    filename: '[name].bundle.js',
+    publicPath: publicPath,
+    sourceMapFilename: '[name].map'
+  },
+
+  plugins: [
+    new webpack.LoaderOptionsPlugin({
+      minimize: true,
+      debug: false
+    }),
+    new webpack.optimize.UglifyJsPlugin({
+      beautify: false,
+      mangle: {
+        screw_ie8: true,
+        keep_fnames: true
+      },
+      compress: {
+        screw_ie8: true
+      },
+      comments: false
+    })
+  ]
+}
+```
+
+package.json
+```javascript
+"scripts": {
+  "build:dev": "webpack --env=dev --progress --profile --colors",
+  "build:dist": "webpack --env=prod --progress --profile --colors"
+}
+```
+
+webpack.config.js
+```javascript
+module.exports = function(env) {
+  return require(`./webpack.${env}.js`)
+}
+```
+
+#### Advanced Approach
+
+A more complex approach would be to have a base configuration file, containing the configuration common to both environments, and then merge that with environment specific configurations.
+
+The tool used to perform this "merge" is simply called webpack-merge and provides a variety of merging options, though we are only going to use the simplest version of it below.
+
+webpack.common.js
+```javascript
+module.exports = {
+  entry: {
+    'polyfills': './src/polyfills.ts',
+    'vendor': './src/vendor.ts',
+    'main': './src/main.ts'
+  },
+
+  output: {
+    path: path.join(__dirname, '/../dist/assets'),
+    filename: '[name].bundle.js',
+    publicPath: publicPath,
+    sourceMapFilename: '[name].map'
+  },
+
+  resolve: {
+    extensions: ['.ts', '.js', '.json'],
+    modules: [path.join(__dirname, 'src'), 'node_modules']
+  },
+
+  module: {
+    rules: [
+      {
+        test: /\.ts$/,
+        exclude: [/\.(spec|e2e)\.ts$/],
+        use: [
+          'awesome-typescript-loader',
+          'angular2-template-loader'
+        ]
+      },
+      {
+        test: /\.css$/,
+        use: ['to-string-loader', 'css-loader']
+      },
+      {
+        test: /\.(jpg|png|gif)$/,
+        use: 'file-loader'
+      },
+      {
+        test: /\.(woff|woff2|eot|ttf|svg)$/,
+        use: {
+          loader: 'url-loader',
+          options: {
+            limit: 100000
+          }
+        }
+      }
+    ]
+  },
+
+  plugins: [
+    new ForkCheckerPlugin(),
+
+    new webpack.optimize.CommonsChunkPlugin({
+      name: ['polyfills', 'vendor'].reverse()
+    }),
+
+    new HtmlWebpackPlugin({
+      template: 'src/index.html',
+      chunksSortMode: 'dependency'
+    })
+  ]
+}
+```
+
+webpack.prod.js:
+```javascript
+const Merge = require('webpack-merge');
+const CommonConfig = require('./webpack.common.js');
+
+module.exports = Merge(CommonConfig, {
+  plugins: [
+    new webpack.LoaderOptionsPlugin({
+      minimize: true,
+      debug: false
+    }),
+    new webpack.DefinePlugin({
+      'process.env': {
+        'NODE_ENV': JSON.stringify('production')
+      }
+    }),
+    new webpack.optimize.UglifyJsPlugin({
+      beautify: false,
+      mangle: {
+        screw_ie8: true,
+        keep_fnames: true
+      },
+      compress: {
+        screw_ie8: true
+      },
+      comments: false
+    })
+  ]
+})
+```
