@@ -540,3 +540,47 @@ So update `package.json`:
   }
 }
 ```
+
+#### Using webpack-dev-server
+
+Install `webpack-dev-server`:
+```
+$ npm install --save-dev webpack-dev-server
+```
+
+Changes on `webpack.config.js`:
+```javascript
+const path = require('path');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
+const CleanWebpackPlugin = require('clean-webpack-plugin');
+
+module.exports = {
+  entry: {
+    app: './src/index.js',
+    print: './src/print.js'
+  },
+  devtool: 'inline-source-map',
+  devServer: {
+    contentBase: './dist'
+  },
+  plugins: [
+    new CleanWebpackPlugin(['dist']),
+    new HtmlWebpackPlugin({
+      title: 'Output Management'
+    })
+  ],
+  output: {
+    filename: '[name].bundle.js',
+    path: path.resolve(__dirname, 'dist')
+  }
+};
+```
+
+And include the script on `package.json`:
+```javascript
+{
+  "scripts": {
+    "start": "webpack-dev-server --open",
+  }
+}
+```
