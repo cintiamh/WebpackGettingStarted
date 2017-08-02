@@ -139,4 +139,61 @@ $ npm run build
 
 ## Asset Management
 
+https://github.com/cintiamh/WebpackGettingStarted/tree/03-asset-management
+
 Tools like webpack will dynamically bundle all dependencies, creating what's known as a dependency graph.
+
+### Loading CSS
+
+In order to import a CSS file from within a JavaScript module, you need to install and add the `style-loader` and `css-loader` to your module configuration.
+```
+$ npm i --save-dev style-loader css-loader
+```
+
+`webpack.config.js`:
+```javascript
+const path = require('path');
+
+module.exports = {
+  entry: './src/index.js',
+  output: {
+    filename: 'bundle.js',
+    path: path.resolve(__dirname, 'dist')
+  },
+  module: {
+    rules: [
+      {
+        test: /\.css$/,
+        use: ['style-loader', 'css-loader']
+      }
+    ]
+  }
+};
+```
+
+Create a new style.css file:
+```
+$ touch src/style.css
+```
+
+`src/style.css`:
+```css
+.hello {
+  color: red;
+}
+```
+
+And use this file inside `index.js`:
+```javascript
+import _ from 'lodash';
+import './style.css';
+
+function component() {
+  var element = document.createElement('div');
+  element.innerHTML = _.join(['Hello', 'webpack'], '');
+  element.classList.add('hello');
+  return element;
+}
+
+document.body.appendChild(component());
+```
