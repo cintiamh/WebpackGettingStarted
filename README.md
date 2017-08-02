@@ -380,3 +380,15 @@ This packaging allows you to group modules and assets together in a more intuiti
 ## Output Management
 
 https://github.com/cintiamh/WebpackGettingStarted/tree/04-output-management
+
+Add a second file `src/print.js`
+```
+$ touch src/print.js
+```
+
+`src/print.js`
+```javascript
+export default function printMe() {
+  console.log('I get called from print.js!');
+}
+```
