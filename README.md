@@ -264,3 +264,115 @@ document.body.appendChild(component());
 ```
 
 A logical next step from here is minifying and optimizing your images. Check out the `image-webpack-loader` and `url-loader` for more on how you can enhance your image loading process.
+
+### Loading Fonts
+
+The file-loader and url-loader can be used for any kind of files, including fonts.
+
+`webpack.config.js`
+```javascript
+const path = require('path');
+
+module.exports = {
+  entry: './src/index.js',
+  output: {
+    filename: 'bundle.js',
+    path: path.resolve(__dirname, 'dist')
+  },
+  module: {
+    rules: [
+      {
+        test: /\.css$/,
+        use: ['style-loader', 'css-loader']
+      },
+      {
+        test: /\.(png|svg|jpg|gif)$/,
+        use: ['file-loader']
+      },
+      {
+        test: /\.(woff|woff2|eot|ttf|otf)$/,
+        use: ['file-loader']
+      }
+    ]
+  }
+};
+```
+
+`style.css`
+```css
+@font-face {
+  font-family: 'MyFont';
+  src: url('./my-font.woff2') format('woff2'), url('./my-font.woff') format('woff');
+  font-weight: 600;
+  font-style: normal;
+}
+
+.hello {
+  color: red;
+  font-family: 'MyFont';
+  background: url('./fb.jpg');
+}
+```
+
+### Loading data
+
+Load files like JSON, CSVs, TSVs, and XML files.
+JSON support is already built in (just do `import Data from './data.json'`).
+
+For other files you can use `csv-loader` or `xml-loader`.
+
+```
+$ npm install --save-dev csv-loader xml-loader
+```
+
+`webpack.config.js`
+```javascript
+const path = require('path');
+
+module.exports = {
+  entry: './src/index.js',
+  output: {
+    filename: 'bundle.js',
+    path: path.resolve(__dirname, 'dist')
+  },
+  module: {
+    rules: [
+      {
+        test: /\.css$/,
+        use: ['style-loader', 'css-loader']
+      },
+      {
+        test: /\.(png|svg|jpg|gif)$/,
+        use: ['file-loader']
+      },
+      {
+        test: /\.(woff|woff2|eot|ttf|otf)$/,
+        use: ['file-loader']
+      },
+      {
+        test: /\.(csv|tsv)$/,
+        use: ['csv-loader']
+      },
+      {
+        test: /\.(xml)$/,
+        use: ['xml-loader']
+      }
+    ]
+  }
+};
+```
+
+This can be especially helpful when implementing some sort of data visualization using a tool like d3. Instead of making an ajax request and parsing the data at runtime you can load it into your module during the build process so that the parsed data is ready to go as soon as the module hits the browser.
+
+### Global Assets
+
+This packaging allows you to group modules and assets together in a more intuitive way. You can group assets with the code that uses them.
+
+```
+|- components
+  |- my-component/
+    |- index.jsx
+    |- index.css
+    |- icon.svg
+    |- img.png
+```

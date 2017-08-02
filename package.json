@@ -18,9 +18,11 @@
   "homepage": "https://github.com/cintiamh/WebpackGettingStarted#readme",
   "devDependencies": {
     "css-loader": "^0.28.4",
+    "csv-loader": "^2.1.1",
     "file-loader": "^0.11.2",
     "style-loader": "^0.18.2",
-    "webpack": "^3.4.1"
+    "webpack": "^3.4.1",
+    "xml-loader": "^1.2.1"
   },
   "dependencies": {
     "lodash": "^4.17.4"
