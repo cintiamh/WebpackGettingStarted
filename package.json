@@ -18,5 +18,8 @@
   "homepage": "https://github.com/cintiamh/WebpackGettingStarted#readme",
   "devDependencies": {
     "webpack": "^3.4.1"
+  },
+  "dependencies": {
+    "lodash": "^4.17.4"
   }
 }

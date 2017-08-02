@@ -23,18 +23,6 @@ node_modules/
 Initial state without webpack:
 https://github.com/cintiamh/WebpackGettingStarted/tree/01-initial-state
 
-### Creating a Bundle
-
-Project contents:
-```
-webpack-demo
-|- package.json
-|- dist/
-  |- index.html
-|- src/
-  |- index.js
-```
-
 `src/index.js`:
 ```javascript
 function component() {
@@ -57,3 +45,53 @@ document.body.appendChild(component());
   </body>
 </html>
 ```
+
+### Creating a Bundle
+
+https://github.com/cintiamh/WebpackGettingStarted/tree/02-creating-bundle
+
+Project contents:
+```
+webpack-demo
+|- package.json
+|- dist/
+  |- index.html
+|- src/
+  |- index.js
+```
+
+Install lodash:
+```
+$ npm i lodash --save
+```
+
+`src/index.js`:
+```javascript
+import _ from 'lodash';
+
+function component() {
+  var element = document.createElement('div');
+  element.innerHTML = _.join(['Hello', 'webpack'], '');
+  return element;
+}
+document.body.appendChild(component());
+```
+
+`index.html`
+```html
+<html>
+  <head>
+    <title>Getting Started</title>
+  </head>
+  <body>
+    <script src="bundle.js"></script>
+  </body>
+</html>
+```
+
+Now if you run:
+```
+$ ./node_modules/.bin/webpack src/index.js dist/bundle.js
+```
+
+It will make webpack create the bundle with lodash.
