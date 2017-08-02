@@ -588,3 +588,148 @@ And include the script on `package.json`:
 ## Hot module replacement
 
 https://github.com/cintiamh/WebpackGettingStarted/tree/06-hot-module-replacement
+
+Hot Module Replacement (HMR) allows all kinds of modules to be updated at runtime without the need for a full refresh.
+
+### Enabling HMR
+
+All we need to do is update our `webpack-dev-server` configuration, and use webpack's built in HMR plugin.
+
+We'll also remove the entry point for `print.js` as it will now be consumed by the `index.js` module.
+
+Updated `webpack.config.js`:
+```javascript
+const path = require('path');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
+const CleanWebpackPlugin = require('clean-webpack-plugin');
+const webpack = require('webpack');
+
+module.exports = {
+  entry: {
+    app: './src/index.js'
+  },
+  devtool: 'inline-source-map',
+  devServer: {
+    contentBase: './dist',
+    hot: true
+  },
+  plugins: [
+    new CleanWebpackPlugin(['dist']),
+    new HtmlWebpackPlugin({
+      title: 'Output Management'
+    }),
+    new webpack.HotModuleReplacementPlugin()
+  ],
+  output: {
+    filename: '[name].bundle.js',
+    path: path.resolve(__dirname, 'dist')
+  }
+};
+```
+
+You can also use the CLI to modify the `webpack-dev-server` configuration with the following command: `webpack-dev-server --hotOnly`.
+
+Now let's update the index.js file so that when a change inside print.js is detected we tell webpack to accept the updated module.
+
+`webpack.config.js`:
+```javascript
+import _ from 'lodash';
+import printMe from './print.js';
+
+function component() {
+  var element = document.createElement('div');
+  var btn = document.createElement('button');
+
+  element.innerHTML = _.join(['Hello', 'webpack'], '');
+
+  btn.innerHTML = 'Click me and check the console!';
+  btn.onclick = printMe;
+
+  element.appendChild(btn);
+
+  return element;
+}
+
+document.body.appendChild(component());
+
+if (module.hot) {
+  module.hot.accept('./print.js', function() {
+    console.log('Accepting the updated printMe module!');
+    printMe();
+  })
+}
+```
+
+#### Gotchas
+
+HMR can be tricky. It might hold reference to old objects.
+
+#### HMR with Stylesheets
+
+HMR with CSS is straightforward with the help of the `style-loader`.
+
+If didn't install it yet, install npm packages:
+```
+$ npm install --save-dev style-loader css-loader
+```
+
+And update webpack.config.js:
+```javascript
+const path = require('path');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
+const CleanWebpackPlugin = require('clean-webpack-plugin');
+const webpack = require('webpack');
+
+module.exports = {
+  entry: {
+    app: './src/index.js'
+  },
+  devtool: 'inline-source-map',
+  devServer: {
+    contentBase: './dist',
+    hot: true
+  },
+  module: {
+    rules: [
+      {
+        test: /\.css$/,
+        use: ['style-loader', 'css-loader']
+      }
+    ]
+  },
+  plugins: [
+    new CleanWebpackPlugin(['dist']),
+    new HtmlWebpackPlugin({
+      title: 'Output Management'
+    }),
+    new webpack.HotModuleReplacementPlugin()
+  ],
+  output: {
+    filename: '[name].bundle.js',
+    path: path.resolve(__dirname, 'dist')
+  }
+};
+```
+
+Create a new `src/styles.css` file:
+```css
+body {
+  background: gray;
+}
+```
+
+and include it in `index.js`:
+```javascript
+import _ from 'lodash';
+import printMe from './print.js';
+import './styles.css';
+```
+
+Now whenever you change the css style in the `./src/styles.css` file, it will update it.
+
+#### Other Code and Frameworks
+
+* React Hot Loader: https://github.com/gaearon/react-hot-loader
+* Redux HMR: https://survivejs.com/webpack/appendices/hmr-with-react/#configuring-hmr-with-redux
+
+## Production
