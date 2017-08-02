@@ -95,3 +95,44 @@ $ ./node_modules/.bin/webpack src/index.js dist/bundle.js
 ```
 
 It will make webpack create the bundle with lodash.
+
+### Using a configuration
+
+Create a new file called `webpack.config.js`:
+```
+$ touch webpack.config.js
+```
+
+`webpack.config.js` file content:
+```javascript
+const path = require('path');
+
+module.exports = {
+  entry: './src/index.js',
+  output: {
+    filename: 'bundle.js',
+    path: path.resolve(__dirname, 'dist')
+  }
+};
+```
+
+Now you should be able to run with the following command, with the same results:
+```
+$ ./node_modules/.bin/webpack --config webpack.config.js
+```
+
+If a webpack.config.js is present, the webpack command picks it up by default. We use the --config option here only to show that you can pass a config of any name. This will come in useful for more complex configurations that need to be split into multiple files.
+
+### npm scripts
+
+We can set up a shortcut command inside `package.json`:
+```javascript
+"scripts": {
+  "build": "webpack"
+},
+```
+
+Now you should be able to run just with:
+```
+$ npm run build
+```

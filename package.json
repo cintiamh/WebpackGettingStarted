@@ -4,7 +4,7 @@
   "description": "Following https://webpack.js.org/guides/getting-started/",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "webpack"
   },
   "repository": {
     "type": "git",
