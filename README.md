@@ -376,3 +376,7 @@ This packaging allows you to group modules and assets together in a more intuiti
     |- icon.svg
     |- img.png
 ```
+
+## Output Management
+
+https://github.com/cintiamh/WebpackGettingStarted/tree/04-output-management
