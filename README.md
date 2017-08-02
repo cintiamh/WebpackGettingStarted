@@ -952,3 +952,9 @@ module.exports = Merge(CommonConfig, {
   ]
 })
 ```
+
+## Tree Shanking
+
+Tree shaking is a term commonly used in the JavaScript context for dead-code elimination, or more precisely, live-code import.
+
+Webpack 2 comes with a built-in support for ES2015 modules (alias harmony modules) as well as unused module export detection.
