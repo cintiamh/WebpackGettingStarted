@@ -486,3 +486,57 @@ module.exports = {
 ## Development
 
 https://github.com/cintiamh/WebpackGettingStarted/tree/05-development
+
+### Using source maps
+
+Source maps maps your compiled code back to your original source code.
+
+Just include devtool into `webpack.config.js`:
+```javascript
+const path = require('path');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
+const CleanWebpackPlugin = require('clean-webpack-plugin');
+
+module.exports = {
+  entry: {
+    app: './src/index.js',
+    print: './src/print.js'
+  },
+  devtool: 'inline-source-map',
+  plugins: [
+    new CleanWebpackPlugin(['dist']),
+    new HtmlWebpackPlugin({
+      title: 'Output Management'
+    })
+  ],
+  output: {
+    filename: '[name].bundle.js',
+    path: path.resolve(__dirname, 'dist')
+  }
+};
+```
+
+### Choosing a Development Tool
+
+Automatically compile your code whenever it changes:
+
+1. webpack's Watch mode
+2. webpack-dev-server
+3. webpack-dev-middleware
+
+In most cases you probably would want to use `webpack-dev-server`.
+
+#### Using watch mode
+
+There is a `webpack --watch` option that if files are updated, the code will be recompiled so you don't have to run the full build manually.
+
+So update `package.json`:
+```javascript
+{
+  "scripts": {
+    // ...
+    "watch": "webpack --watch",
+    // ...
+  }
+}
+```

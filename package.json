@@ -4,6 +4,7 @@
   "description": "Following https://webpack.js.org/guides/getting-started/",
   "main": "index.js",
   "scripts": {
+    "watch": "webpack --watch",
     "build": "webpack"
   },
   "repository": {
