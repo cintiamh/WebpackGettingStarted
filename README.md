@@ -20,6 +20,9 @@ node_modules/
 *.iml
 ```
 
+Initial state without webpack:
+https://github.com/cintiamh/WebpackGettingStarted/tree/01-initial-state
+
 ### Creating a Bundle
 
 Project contents:
