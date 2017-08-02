@@ -586,3 +586,5 @@ And include the script on `package.json`:
 ```
 
 ## Hot module replacement
+
+https://github.com/cintiamh/WebpackGettingStarted/tree/06-hot-module-replacement
