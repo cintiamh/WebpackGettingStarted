@@ -4,7 +4,9 @@
   "description": "Following https://webpack.js.org/guides/getting-started/",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "watch": "webpack --watch",
+    "start": "webpack-dev-server --open",
+    "build": "webpack"
   },
   "repository": {
     "type": "git",
@@ -17,6 +19,17 @@
   },
   "homepage": "https://github.com/cintiamh/WebpackGettingStarted#readme",
   "devDependencies": {
-    "webpack": "^3.4.1"
+    "clean-webpack-plugin": "^0.1.16",
+    "css-loader": "^0.28.4",
+    "csv-loader": "^2.1.1",
+    "file-loader": "^0.11.2",
+    "html-webpack-plugin": "^2.30.1",
+    "style-loader": "^0.18.2",
+    "webpack": "^3.4.1",
+    "webpack-dev-server": "^2.6.1",
+    "xml-loader": "^1.2.1"
+  },
+  "dependencies": {
+    "lodash": "^4.17.4"
   }
 }
